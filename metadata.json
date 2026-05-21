@@ -1,0 +1,6 @@
+{
+  "name": "Teleprompter AI Pro",
+  "description": "Modern teleprompter app for creators with camera preview, screen sharing, and auto-scrolling script.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
