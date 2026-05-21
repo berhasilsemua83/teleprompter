@@ -149,7 +149,7 @@ const GuideModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         </button>
         
         <h2 className="text-2xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 pr-8">
-          Cara Penggunaan Teleprompter AI Pro
+          Cara Penggunaan Teleprompter Akariu
         </h2>
         
         <div className="space-y-6 text-white/80 text-sm sm:text-base">
