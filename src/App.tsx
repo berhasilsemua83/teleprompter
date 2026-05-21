@@ -484,15 +484,15 @@ export default function App() {
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
           className="max-w-4xl mx-auto h-screen flex flex-col p-4 sm:p-8"
         >
-          <header className="flex justify-between items-center mb-6">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-purple-600 flex items-center justify-center">
+          <header className="flex flex-col sm:flex-row gap-4 justify-between items-center mb-4 sm:mb-6">
+            <div className="flex items-center gap-2 w-full sm:w-auto justify-start">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-purple-600 flex items-center justify-center shrink-0">
                 <PlayCircle className="text-white" size={20} />
               </div>
-              <h1 className="text-xl font-bold tracking-tight">Teleprompter<span className="font-light text-white/50">Akariu</span></h1>
+              <h1 className="text-xl font-bold tracking-tight truncate">Teleprompter<span className="font-light text-white/50">Akariu</span></h1>
             </div>
             
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-between sm:justify-end overflow-x-auto pb-2 sm:pb-0 hide-scrollbar">
               <button 
                 onClick={() => setShowGuide(true)}
                 className="p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors text-white/70"
@@ -520,7 +520,7 @@ export default function App() {
                     setCountdown(3);
                   }
                 }}
-                className="px-6 py-2.5 rounded-full bg-cyan-500 hover:bg-cyan-400 text-black font-semibold tracking-wide transition-all shadow-[0_0_20px_rgba(34,211,238,0.3)] hover:shadow-[0_0_30px_rgba(34,211,238,0.6)] flex items-center gap-2"
+                className="px-6 py-2.5 rounded-full bg-cyan-500 hover:bg-cyan-400 text-black font-semibold tracking-wide transition-all shadow-[0_0_20px_rgba(34,211,238,0.3)] hover:shadow-[0_0_30px_rgba(34,211,238,0.6)] flex items-center gap-2 shrink-0"
               >
                 Start Prompter <Play size={16} className="fill-current" />
               </button>
