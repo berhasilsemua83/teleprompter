@@ -26,17 +26,17 @@ const DEFAULT_SETTINGS: AppSettings = {
   lineHeight: 1.5,
 };
 
-const DEFAULT_SCRIPT = `Welcome to the Modern Teleprompter!
+const DEFAULT_SCRIPT = `Selamat datang di Teleprompter Akariu
 
-This app is designed for creators, built with a cinematic feel.
+Aplikasi ini dirancang khusus untuk para konten kreator agar presentasi Anda lebih lancar.
 
-• Smooth auto-scrolling
-• Adjustable speed & font size
-• Mirror text for reflections
-• Picture-in-picture camera
-• Screen recording ready
+• Scroll teks otomatis yang mulus
+• Atur kecepatan & ukuran teks sesuka Anda
+• Fitur Mirror Text (Pencerminan) untuk melihat dari kaca
+• Picture-in-picture kamera depan untuk merekam
+• Sembunyikan kontrol otomatis (Auto-hide)
 
-Tap "Play" to start.`;
+Tekan tombol "Start Prompter" di atas untuk mencoba.`;
 
 // --- HOOKS ---
 function useLocalStorage<T>(key: string, initialValue: T) {
