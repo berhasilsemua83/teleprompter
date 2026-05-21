@@ -206,7 +206,7 @@ const SettingsPanel: React.FC<{
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
-      className="absolute bottom-full mb-4 right-0 w-72 bg-gray-900/90 backdrop-blur-xl border border-white/10 rounded-2xl p-5 shadow-2xl z-50 text-white/90"
+      className="absolute bottom-full mb-4 right-0 sm:right-0 w-[85vw] max-w-[280px] sm:max-w-sm sm:w-72 bg-gray-900/90 backdrop-blur-xl border border-white/10 rounded-2xl p-4 sm:p-5 shadow-2xl z-50 text-white/90"
     >
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-sm font-semibold text-white">Settings</h3>
@@ -600,65 +600,65 @@ export default function App() {
                 className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-2xl bg-black/60 backdrop-blur-2xl border border-white/10 p-3 sm:p-4 rounded-3xl shadow-2xl flex items-center justify-between z-40 transition-all"
               >
                 {/* Left Actions */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 sm:gap-2">
                   <button
                     onClick={() => {
                       setIsPlaying(false);
                       setMode('edit');
                     }}
-                    className="p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors text-white group relative"
+                    className="p-2 sm:p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors text-white group relative shrink-0"
                   >
-                    <Edit3 size={20} />
-                    <span className="absolute -top-10 left-1/2 -translate-x-1/2 bg-black/80 px-2 py-1 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity">Edit</span>
+                    <Edit3 size={18} className="sm:w-5 sm:h-5" />
+                    <span className="absolute -top-10 left-1/2 -translate-x-1/2 bg-black/80 px-2 py-1 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Edit</span>
                   </button>
 
                   <button
                     onClick={handleReset}
-                    className="p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors text-white"
+                    className="p-2 sm:p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors text-white shrink-0"
                   >
-                    <RotateCcw size={20} />
+                    <RotateCcw size={18} className="sm:w-5 sm:h-5" />
                   </button>
                 </div>
 
                 {/* Primary Play/Pause Action */}
                 <button
                   onClick={handlePlayPause}
-                  className="w-16 h-16 sm:w-20 sm:h-20 bg-cyan-500 hover:bg-cyan-400 text-black rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(34,211,238,0.4)] transition-transform active:scale-95"
+                  className="w-14 h-14 sm:w-20 sm:h-20 bg-cyan-500 hover:bg-cyan-400 text-black rounded-full flex mx-2 sm:mx-4 items-center justify-center shrink-0 shadow-[0_0_30px_rgba(34,211,238,0.4)] transition-transform active:scale-95"
                 >
                   {isPlaying ? (
-                    <Pause size={32} className="fill-current" />
+                    <Pause size={24} className="sm:w-8 sm:h-8 fill-current" />
                   ) : (
-                    <Play size={32} className="fill-current ml-2" />
+                    <Play size={24} className="sm:w-8 sm:h-8 fill-current ml-1 sm:ml-2" />
                   )}
                 </button>
 
                 {/* Right Actions */}
-                <div className="flex items-center gap-2 relative">
+                <div className="flex items-center gap-1 sm:gap-2 relative">
                   <button
                     onClick={() => setCameraMode(prev => prev === 'camera' ? 'none' : 'camera')}
-                    className={`p-3 rounded-full transition-colors flex ${cameraMode === 'camera' ? 'bg-cyan-500/20 text-cyan-400' : 'bg-white/10 hover:bg-white/20 text-white'}`}
+                    className={`p-2 sm:p-3 rounded-full transition-colors flex shrink-0 ${cameraMode === 'camera' ? 'bg-cyan-500/20 text-cyan-400' : 'bg-white/10 hover:bg-white/20 text-white'}`}
                   >
-                    <Camera size={20} />
+                    <Camera size={18} className="sm:w-5 sm:h-5" />
                   </button>
                   <button
                     onClick={() => setCameraMode(prev => prev === 'screen' ? 'none' : 'screen')}
-                    className={`p-3 rounded-full transition-colors flex ${cameraMode === 'screen' ? 'bg-cyan-500/20 text-cyan-400' : 'bg-white/10 hover:bg-white/20 text-white'}`}
+                    className={`p-2 sm:p-3 rounded-full transition-colors hidden sm:flex shrink-0 ${cameraMode === 'screen' ? 'bg-cyan-500/20 text-cyan-400' : 'bg-white/10 hover:bg-white/20 text-white'}`}
                   >
-                    <Monitor size={20} />
+                    <Monitor size={18} className="sm:w-5 sm:h-5" />
                   </button>
                   <button
                     onClick={toggleFullscreen}
-                    className="p-3 rounded-full transition-colors bg-white/10 hover:bg-white/20 text-white"
+                    className="p-2 sm:p-3 rounded-full transition-colors bg-white/10 hover:bg-white/20 text-white hidden sm:flex shrink-0"
                   >
-                    {isFullscreen ? <Minimize size={20} /> : <Maximize size={20} />}
+                    {isFullscreen ? <Minimize size={18} className="sm:w-5 sm:h-5" /> : <Maximize size={18} className="sm:w-5 sm:h-5" />}
                   </button>
                   
-                  <div className="relative">
+                  <div className="relative shrink-0">
                     <button
                       onClick={() => setShowSettings(!showSettings)}
-                      className={`p-3 rounded-full transition-colors ${showSettings ? 'bg-white/30' : 'bg-white/10 hover:bg-white/20 text-white'}`}
+                      className={`p-2 sm:p-3 rounded-full transition-colors shrink-0 ${showSettings ? 'bg-white/30' : 'bg-white/10 hover:bg-white/20 text-white'}`}
                     >
-                      <Settings2 size={20} />
+                      <Settings2 size={18} className="sm:w-5 sm:h-5" />
                     </button>
 
                     <AnimatePresence>
