@@ -26,7 +26,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   lineHeight: 1.5,
 };
 
-const DEFAULT_SCRIPT = `Selamat datang di Teleprompter Akariu
+const DEFAULT_SCRIPT = `Selamat datang di Teleprompter Akariu!
 
 Aplikasi ini dirancang khusus untuk para konten kreator agar presentasi Anda lebih lancar.
 
@@ -70,24 +70,40 @@ const CameraPreview: React.FC<{
   onClose: () => void;
 }> = ({ mode, onClose }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const recordedChunksRef = useRef<Blob[]>([]);
+  
+  const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user');
+  const [isRecording, setIsRecording] = useState(false);
 
   useEffect(() => {
-    let stream: MediaStream | null = null;
-
     const startMedia = async () => {
       try {
+        if (streamRef.current) {
+          streamRef.current.getTracks().forEach(track => track.stop());
+        }
+
         if (mode === 'camera') {
-          stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+          // Include audio so the recording has sound!
+          streamRef.current = await navigator.mediaDevices.getUserMedia({ 
+            video: { facingMode }, 
+            audio: true 
+          });
         } else if (mode === 'screen') {
-          stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
+          streamRef.current = await navigator.mediaDevices.getDisplayMedia({ 
+            video: true, 
+            audio: true 
+          });
         }
         
-        if (videoRef.current && stream) {
-          videoRef.current.srcObject = stream;
+        if (videoRef.current && streamRef.current) {
+          // Mute local video playback to prevent echoing
+          videoRef.current.muted = true;
+          videoRef.current.srcObject = streamRef.current;
         }
       } catch (err) {
         console.error('Failed to get media', err);
-        // Fallback UI handled by container
       }
     };
 
@@ -96,11 +112,64 @@ const CameraPreview: React.FC<{
     }
 
     return () => {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+        mediaRecorderRef.current.stop();
+      }
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
       }
     };
-  }, [mode]);
+  }, [mode, facingMode]);
+
+  const toggleCamera = () => {
+    setFacingMode(prev => prev === 'user' ? 'environment' : 'user');
+  };
+
+  const handleRecord = () => {
+    if (!streamRef.current) return;
+
+    if (isRecording) {
+      // Stop recording
+      mediaRecorderRef.current?.stop();
+      setIsRecording(false);
+    } else {
+      // Start recording
+      recordedChunksRef.current = [];
+      const options = { mimeType: 'video/webm;codecs=vp9,opus' };
+      
+      try {
+        const recorder = new MediaRecorder(streamRef.current, MediaRecorder.isTypeSupported(options.mimeType) ? options : undefined);
+        
+        recorder.ondataavailable = (event) => {
+          if (event.data.size > 0) {
+            recordedChunksRef.current.push(event.data);
+          }
+        };
+
+        recorder.onstop = () => {
+          const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = `recording-${Date.now()}.webm`;
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }, 100);
+        };
+
+        recorder.start();
+        mediaRecorderRef.current = recorder;
+        setIsRecording(true);
+      } catch (err) {
+        console.error('Failed to start recording', err);
+        alert('Gagal memulai rekaman. Browser mungkin tidak mendukung.');
+      }
+    }
+  };
 
   if (mode === 'none') return null;
 
@@ -111,7 +180,7 @@ const CameraPreview: React.FC<{
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.8 }}
-      className="fixed z-50 w-32 h-48 sm:w-40 sm:h-56 bg-black/80 rounded-2xl overflow-hidden shadow-2xl border border-white/10 backdrop-blur-md"
+      className="fixed z-50 w-36 h-52 sm:w-48 sm:h-64 bg-black/80 rounded-2xl overflow-hidden shadow-2xl border border-white/10 backdrop-blur-md flex flex-col"
       style={{ right: 20, top: 20 }}
     >
       <video
@@ -119,16 +188,43 @@ const CameraPreview: React.FC<{
         autoPlay
         playsInline
         muted
-        className={`w-full h-full object-cover ${mode === 'camera' ? 'scale-x-[-1]' : ''}`}
+        className={`w-full h-full object-cover transition-transform duration-300 ${mode === 'camera' && facingMode === 'user' ? 'scale-x-[-1]' : ''}`}
       />
-      <button
-        onClick={onClose}
-        className="absolute top-2 right-2 p-1.5 bg-black/50 hover:bg-black/80 rounded-full text-white/70 transition-colors"
-      >
-        <X size={14} />
-      </button>
-      <div className="absolute bottom-2 left-2 text-[10px] font-mono font-medium text-white/70 bg-black/50 px-2 py-0.5 rounded-full">
-        {mode === 'camera' ? 'CAM' : 'SCR'}
+      
+      <div className="absolute top-2 right-2 flex flex-col gap-2">
+        <button
+          onClick={onClose}
+          className="p-1.5 bg-black/50 hover:bg-black/80 rounded-full text-white/70 transition-colors"
+          title="Tutup"
+        >
+          <X size={14} />
+        </button>
+      </div>
+
+      <div className="absolute bottom-2 left-2 right-2 flex justify-between items-center bg-black/40 backdrop-blur rounded-full px-2 py-1">
+        <div className="text-[10px] font-mono font-medium text-white/70 flex items-center gap-1">
+          {isRecording && <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />}
+          {mode === 'camera' ? 'CAM' : 'SCR'}
+        </div>
+        
+        <div className="flex items-center gap-1">
+          {mode === 'camera' && (
+            <button
+              onClick={toggleCamera}
+              className="p-1.5 hover:bg-white/20 rounded-full text-white transition-colors"
+              title="Balik Kamera"
+            >
+              <ArrowLeftRight size={14} />
+            </button>
+          )}
+          <button
+            onClick={handleRecord}
+            className={`p-1.5 rounded-full transition-colors flex items-center justify-center ${isRecording ? 'text-red-500 hover:bg-red-500/20' : 'text-white hover:bg-white/20'}`}
+            title={isRecording ? "Stop Rekam & Simpan" : "Mulai Rekam"}
+          >
+            <div className={`w-3 h-3 rounded-full border-2 ${isRecording ? 'border-red-500 bg-red-500' : 'border-white'}`} style={isRecording ? { borderRadius: '2px'} : {}} />
+          </button>
+        </div>
       </div>
     </motion.div>
   );
