@@ -489,7 +489,7 @@ export default function App() {
               <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-purple-600 flex items-center justify-center">
                 <PlayCircle className="text-white" size={20} />
               </div>
-              <h1 className="text-xl font-bold tracking-tight">Teleprompter<span className="font-light text-white/50">Pro</span></h1>
+              <h1 className="text-xl font-bold tracking-tight">Teleprompter<span className="font-light text-white/50">Akariu</span></h1>
             </div>
             
             <div className="flex items-center gap-2 sm:gap-3">
